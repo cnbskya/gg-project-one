@@ -1,26 +1,34 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class GridManager : MonoBehaviour
 {
     public static GridManager Instance;
     [SerializeField] private Camera mainCam;
-    
+
+    [Header("UI Props")]
+    private int matchCount;
+    public TMP_Text matchCounterText;
+    public TMP_InputField gridSizeText;
+
     [Header("Grid Generation Props")]
     [SerializeField] private Transform gridHolder;
+
     [SerializeField] private GameObject gridPointPrefab;
     [SerializeField] private int gridSize = 5;
     [SerializeField] private float distanceBetweenPoints = 1f;
-    
+
     private List<GridPart> allGridParts = new List<GridPart>();
-    
+
     private void Awake()
     {
         Instance = this;
         GenerateGrid();
     }
-    
+
     void GenerateGrid()
     {
         for (int i = 0; i < gridSize; i++)
@@ -30,7 +38,7 @@ public class GridManager : MonoBehaviour
                 Vector3 spawnPosition = new Vector3(i * distanceBetweenPoints, 0f, j * distanceBetweenPoints);
                 GameObject spawnedGridObj = Instantiate(gridPointPrefab, spawnPosition, Quaternion.identity);
                 GridPart spawnedGridPart = spawnedGridObj.GetComponent<GridPart>();
-                
+
                 spawnedGridObj.transform.SetParent(gridHolder);
                 ListHelper.AddToList(spawnedGridPart, allGridParts);
             }
@@ -39,20 +47,42 @@ public class GridManager : MonoBehaviour
         SetOrthographicCameraPosAndSize();
     }
 
+    public void Rebuild()
+    {
+        int size = int.Parse(gridSizeText.text);
+        Debug.Log("SIZE: " + size);
+        gridSize = size;
+        
+        DestroyAllGridPart();
+        GenerateGrid();
+    }
+
+    private void DestroyAllGridPart()
+    {
+        for (int i = allGridParts.Count - 1; i >= 0; i--)
+        {
+            GridPart gridPart = allGridParts[i];
+            allGridParts.Remove(gridPart);
+            Destroy(gridPart.gameObject);
+        }
+    }
+    
     public void CheckAllGridPartSelectionCondition()
     {
         List<GridPart> completedGridParts = GetCompletedGridParts();
 
         if (completedGridParts.Count <= 0) return;
-        
+
         foreach (var gridPart in completedGridParts)
         {
             List<GridPart> gridPartSelectedNeighbours = gridPart.GetSelectedNeighbourList();
-            
+
             gridPart.SelectedToggle(false);
             foreach (var selectedGridPart in gridPartSelectedNeighbours)
                 selectedGridPart.SelectedToggle(false);
         }
+
+        IncreaseMatchCounter(1);
     }
 
     private List<GridPart> GetCompletedGridParts()
@@ -76,6 +106,18 @@ public class GridManager : MonoBehaviour
     }
 
     #region Helper Funcs
+
+    private void IncreaseMatchCounter(int increaseAmount)
+    {
+        matchCount += increaseAmount;
+
+        UpdateMatchCounterText();
+    }
+
+    private void UpdateMatchCounterText()
+    {
+        matchCounterText.text = matchCount.ToString();
+    }
 
     private Vector3 GetGridCenter()
     {
