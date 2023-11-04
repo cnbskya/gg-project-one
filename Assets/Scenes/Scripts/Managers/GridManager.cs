@@ -10,9 +10,9 @@ public class GridManager : MonoBehaviour
     [SerializeField] private Camera mainCam;
 
     [Header("UI Props")]
+    [SerializeField] TMP_Text matchCounterText;
+    [SerializeField] TMP_InputField gridSizeText;
     private int matchCount;
-    public TMP_Text matchCounterText;
-    public TMP_InputField gridSizeText;
 
     [Header("Grid Generation Props")]
     [SerializeField] private Transform gridHolder;
