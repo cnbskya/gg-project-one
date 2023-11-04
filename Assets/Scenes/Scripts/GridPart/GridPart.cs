@@ -8,6 +8,7 @@ public class GridPart : MonoBehaviour, IClickable
 
     [SerializeField] private GameObject selectedCanvas;
     public List<GridPart> myNeighbours = new List<GridPart>();
+    public List<GridPart> currentSelectedNeighbours;
 
     private void Start()
     {
@@ -33,23 +34,18 @@ public class GridPart : MonoBehaviour, IClickable
         selectedCanvas.SetActive(isEnabled);
     }
 
-    public void CheckNeighboursSelectedCondition()
+    public bool CheckNeighboursSelectedCondition()
     {
         List<GridPart> selectedNeighbourList = GetSelectedNeighbourList();
 
-        if (isSelected && selectedNeighbourList.Count >= 2)
-        {
-            SelectedToggle(false);
-            foreach (var gridPart in selectedNeighbourList)
-            {
-                gridPart.SelectedToggle(false);
-            }
-        }
+        bool isCompleted = isSelected && selectedNeighbourList.Count >= 2;
+
+        return isCompleted;
     }
 
     #region Helper
 
-    private List<GridPart> GetSelectedNeighbourList()
+    public List<GridPart> GetSelectedNeighbourList()
     {
         List<GridPart> returnedSelectedNeighbourList = new List<GridPart>();
 
@@ -57,7 +53,7 @@ public class GridPart : MonoBehaviour, IClickable
         {
             ListHelper.AddToList(neighbour, returnedSelectedNeighbourList);
         }
-        
+
         return returnedSelectedNeighbourList;
     }
 

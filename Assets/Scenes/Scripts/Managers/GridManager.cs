@@ -42,12 +42,31 @@ public class GridManager : MonoBehaviour
 
     public void CheckAllGridPartSelectionCondition()
     {
-        foreach (var gridPart in allGridParts)
+        List<GridPart> completedGridParts = GetCompletedGridParts();
+        
+        foreach (var gridPart in completedGridParts)
         {
-            gridPart.CheckNeighboursSelectedCondition();
+            List<GridPart> gridPartSelectedNeighbours = gridPart.GetSelectedNeighbourList();
+            
+            gridPart.SelectedToggle(false);
+            foreach (var selectedGridPart in gridPartSelectedNeighbours)
+                selectedGridPart.SelectedToggle(false);
         }
     }
-    
+
+    private List<GridPart> GetCompletedGridParts()
+    {
+        List<GridPart> completedGridParts = new List<GridPart>();
+
+        foreach (var gridPart in allGridParts)
+        {
+            bool isCompleted = gridPart.CheckNeighboursSelectedCondition();
+            if (isCompleted) completedGridParts.Add(gridPart);
+        }
+
+        return completedGridParts;
+    }
+
     private void SetOrthographicCameraPosAndSize()
     {
         Vector3 gridCenter = GetGridCenter();

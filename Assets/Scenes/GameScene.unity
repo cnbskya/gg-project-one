@@ -456,11 +456,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c24025f51e0b26347bb38658320a8436, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  allGridParts: []
   mainCam: {fileID: 963194227}
   gridHolder: {fileID: 1724670814}
   gridPointPrefab: {fileID: 5646628239381999012, guid: d3cbc1cc4f7b19647b397b5a0aa53c96, type: 3}
-  gridSize: 6
-  distanceBetweenPoints: 1.25
+  gridSize: 5
+  distanceBetweenPoints: 1.1
 --- !u!1 &1724670813
 GameObject:
   m_ObjectHideFlags: 0
