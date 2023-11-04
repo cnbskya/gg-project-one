@@ -5,17 +5,16 @@ using UnityEngine;
 public class GridManager : MonoBehaviour
 {
     public static GridManager Instance;
-    [Header("All Grid Parts")]
-    public List<GridPart> allGridParts = new List<GridPart>();
-
     [SerializeField] private Camera mainCam;
-
-    [Header("Grid Prop Values")]
+    
+    [Header("Grid Generation Props")]
     [SerializeField] private Transform gridHolder;
     [SerializeField] private GameObject gridPointPrefab;
     [SerializeField] private int gridSize = 5;
     [SerializeField] private float distanceBetweenPoints = 1f;
-
+    
+    private List<GridPart> allGridParts = new List<GridPart>();
+    
     private void Awake()
     {
         Instance = this;
@@ -43,6 +42,8 @@ public class GridManager : MonoBehaviour
     public void CheckAllGridPartSelectionCondition()
     {
         List<GridPart> completedGridParts = GetCompletedGridParts();
+
+        if (completedGridParts.Count <= 0) return;
         
         foreach (var gridPart in completedGridParts)
         {
